@@ -1,9 +1,9 @@
 .ticket {
-  --ticket-text: #B19797;
-  --ticket-header-bg: #F8EADB;
+  --ticket-text: #b19797;
+  --ticket-header-bg: #f8eadb;
   --ticket-body-bg: #ffffff;
   --ticket-divider: #d1c4c4;
-  --ticket-slot-value-text: #704F4F;
+  --ticket-slot-value-text: #704f4f;
 
   display: flex;
   flex-direction: column;
@@ -60,7 +60,7 @@
 }
 
 .ticket-slot:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 50%;
