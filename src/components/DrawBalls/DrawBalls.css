@@ -1,0 +1,30 @@
+.draw-balls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.draw-ball-button {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.draw-ball-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.draw-ball-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.draw-ball-button--reset {
+  border-color: rgba(245, 208, 106, 0.35);
+}

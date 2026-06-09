@@ -1,0 +1,119 @@
+.panel-wrapper {
+  --ticket-width: 197px;
+  --ticket-height: 43px;
+  --ticket-gap: 6px;
+  --visible-rows: 4;
+  --columns: 4;
+  --scrollbar-gap: 10px;
+  --panel-width: calc(
+    var(--columns) * var(--ticket-width) +
+      (var(--columns) - 1) * var(--ticket-gap)
+  );
+  --viewport-height: calc(
+    var(--visible-rows) * var(--ticket-height) +
+      (var(--visible-rows) - 1) * var(--ticket-gap)
+  );
+
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--panel-width);
+  z-index: 1;
+}
+
+.panel {
+  width: 100%;
+  background: transparent;
+}
+
+.panel-viewport {
+  position: relative;
+  width: var(--panel-width);
+  height: var(--viewport-height);
+  overflow-y: auto;
+  border-radius: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.panel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.panel-grid-spacer {
+  width: 100%;
+  pointer-events: none;
+}
+
+.panel-ticket-node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.panel .ticket {
+  width: var(--ticket-width);
+  height: var(--ticket-height);
+  max-width: none;
+}
+
+.panel .ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 16px;
+  padding: 2px 6px 1px;
+  gap: 4px;
+}
+
+.panel .ticket-payout {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: #5a3d1e;
+  line-height: 1;
+}
+
+.panel .ticket-number {
+  font-size: 0.625rem;
+  flex-shrink: 0;
+}
+
+.panel .ticket-slot {
+  min-height: 0;
+}
+
+.panel .ticket-slot-value {
+  font-size: 0.875rem;
+}
+
+.panel-scrollbar {
+  position: absolute;
+  top: 0;
+  left: calc(100% + var(--scrollbar-gap));
+  width: 10px;
+  height: var(--viewport-height);
+  padding: 4px 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(255, 215, 120, 0.25);
+  cursor: pointer;
+}
+
+.panel-scrollbar--idle {
+  background: transparent;
+  box-shadow: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.panel-scrollbar-thumb {
+  width: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f5d06a 0%, #d4a017 100%);
+  box-shadow:
+    0 0 8px rgba(245, 208, 106, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}

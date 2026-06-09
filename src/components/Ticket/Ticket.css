@@ -1,0 +1,87 @@
+.ticket {
+  --ticket-text: #B19797;
+  --ticket-header-bg: #F8EADB;
+  --ticket-body-bg: #ffffff;
+  --ticket-divider: #d1c4c4;
+  --ticket-slot-value-text: #704F4F;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 52px;
+  padding: 10px 18px 8px;
+  background: var(--ticket-header-bg);
+}
+
+.ticket--winning .ticket-header {
+  background: var(--ticket-header-bg);
+}
+
+.ticket-payout {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #5a3d1e;
+  white-space: nowrap;
+}
+
+.ticket-number {
+  margin-left: auto;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ticket-text);
+}
+
+.ticket-numbers {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  background: var(--ticket-body-bg);
+}
+
+.ticket-slot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 88px;
+}
+
+.ticket-slot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 1px;
+  height: 52%;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: var(--ticket-divider);
+}
+
+.ticket-slot--drawn {
+  background: linear-gradient(180deg, #ffe566 0%, #f5c842 100%);
+}
+
+.ticket-slot--drawn .ticket-slot-value {
+  color: #5a3d1e;
+}
+
+.ticket-slot-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ticket-slot-value-text);
+}

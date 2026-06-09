@@ -1,0 +1,31 @@
+.drawn-balls-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.drawn-balls-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.drawn-balls-view__balls {
+  display: flex;
+  gap: 8px;
+}
+
+.drawn-ball {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #f5d06a 0%, #d4a017 100%);
+  color: #3d3428;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}

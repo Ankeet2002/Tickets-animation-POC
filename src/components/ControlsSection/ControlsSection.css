@@ -1,0 +1,51 @@
+.controls-section {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: min(860px, calc(100vw - 32px));
+  padding: 16px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(28, 28, 28, 0.92);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.controls-section__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.controls-section__row--header {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.controls-section__row--betting {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.controls-section__row--draw {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.controls-section__ticket-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls-section__divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}

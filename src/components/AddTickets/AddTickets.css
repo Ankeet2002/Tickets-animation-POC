@@ -1,0 +1,69 @@
+.add-tickets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.add-tickets__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.add-ticket-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f5d06a 0%, #d4a017 100%);
+  color: #3d3428;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.add-ticket-button:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.add-ticket-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.add-ticket-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  box-shadow: none;
+}
+
+.undo-button {
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.undo-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.undo-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.undo-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
