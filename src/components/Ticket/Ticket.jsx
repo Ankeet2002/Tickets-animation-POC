@@ -1,3 +1,5 @@
+import { memo } from 'react'
+import { useDrawState } from '../Panel/DrawStateContext.jsx'
 import {
   getTicketPayout,
   shouldShowTicketPayout,
@@ -7,13 +9,8 @@ import TicketPayout from './TicketPayout.jsx'
 import TicketSlot from './TicketSlot.jsx'
 import './Ticket.css'
 
-function Ticket({
-  ticketNumber,
-  numbers,
-  drawnNumbers = [],
-  betPerTicket = 0,
-}) {
-  const drawnSet = new Set(drawnNumbers)
+function Ticket({ ticketNumber, numbers }) {
+  const { drawnNumbers, drawnSet, betPerTicket } = useDrawState()
   const ticket = { numbers }
   const showPayout = shouldShowTicketPayout(ticket, drawnNumbers)
   const payout = getTicketPayout(ticket, drawnNumbers, betPerTicket)
@@ -37,4 +34,10 @@ function Ticket({
   )
 }
 
-export default Ticket
+function arePropsEqual(prev, next) {
+  return (
+    prev.ticketNumber === next.ticketNumber && prev.numbers === next.numbers
+  )
+}
+
+export default memo(Ticket, arePropsEqual)

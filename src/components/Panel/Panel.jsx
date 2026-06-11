@@ -1,12 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {
   selectBetPerTicket,
   selectDrawnNumbers,
   selectSortedTickets,
 } from '../../store/selectors.js'
-import Ticket from '../Ticket/Ticket.jsx'
-import { useFlipTicketGrid } from './useFlipTicketGrid.js'
+import VisibleTicketPool from './VisibleTicketPool.jsx'
+import {
+  getSortAnimationTickets,
+  getVisibleRowRange,
+  useTicketGridData,
+} from './useFlipTicketGrid.js'
 import './Panel.css'
 
 function Panel() {
@@ -14,24 +18,49 @@ function Panel() {
   const drawnNumbers = useSelector(selectDrawnNumbers)
   const betPerTicket = useSelector(selectBetPerTicket)
   const viewportRef = useRef(null)
-  const [scrollbar, setScrollbar] = useState({
+  const contentPoolRef = useRef(null)
+  const scrollbarTrackRef = useRef(null)
+  const scrollbarThumbRef = useRef(null)
+  const scrollRafRef = useRef(0)
+  const prevSortedOrderRef = useRef([])
+  const visibleRowRangeRef = useRef(getVisibleRowRange(0))
+  const scrollbarMetricsRef = useRef({
     visible: false,
     thumbHeight: 0,
-    thumbTop: 0,
   })
+  const [scrollbarVisible, setScrollbarVisible] = useState(false)
 
-  const { sortedOrder, registerNodeRef, ticketsById, totalH } =
-    useFlipTicketGrid(tickets)
+  const { sortedOrder, ticketsById, ticketToSlot, totalH } =
+    useTicketGridData(tickets)
+
+  const flipTicketNumbers = useMemo(
+    () =>
+      getSortAnimationTickets(
+        prevSortedOrderRef.current,
+        sortedOrder,
+        visibleRowRangeRef.current,
+      ),
+    [sortedOrder],
+  )
+
+  useLayoutEffect(() => {
+    prevSortedOrderRef.current = sortedOrder
+  }, [sortedOrder])
 
   const updateScrollbar = useCallback(() => {
     const viewport = viewportRef.current
-    if (!viewport) return
+    const track = scrollbarTrackRef.current
+    const thumb = scrollbarThumbRef.current
+    if (!viewport || !track || !thumb) return
 
     const { scrollTop, scrollHeight, clientHeight } = viewport
     const canScroll = scrollHeight > clientHeight + 1
 
     if (!canScroll) {
-      setScrollbar({ visible: false, thumbHeight: 0, thumbTop: 0 })
+      if (scrollbarMetricsRef.current.visible) {
+        scrollbarMetricsRef.current = { visible: false, thumbHeight: 0 }
+        setScrollbarVisible(false)
+      }
       return
     }
 
@@ -39,22 +68,46 @@ function Panel() {
     const thumbHeight = Math.max((clientHeight / scrollHeight) * trackHeight, 28)
     const maxThumbTop = trackHeight - thumbHeight
     const scrollRatio = scrollTop / (scrollHeight - clientHeight)
+    const thumbTop = scrollRatio * maxThumbTop
 
-    setScrollbar({
-      visible: true,
-      thumbHeight,
-      thumbTop: scrollRatio * maxThumbTop,
-    })
+    thumb.style.height = `${thumbHeight}px`
+    thumb.style.transform = `translateY(${thumbTop}px)`
+
+    const metrics = scrollbarMetricsRef.current
+    if (!metrics.visible || metrics.thumbHeight !== thumbHeight) {
+      scrollbarMetricsRef.current = { visible: true, thumbHeight }
+      setScrollbarVisible(true)
+    }
   }, [])
 
   const handleScroll = useCallback(() => {
-    updateScrollbar()
+    if (scrollRafRef.current) return
+
+    scrollRafRef.current = requestAnimationFrame(() => {
+      scrollRafRef.current = 0
+      const viewport = viewportRef.current
+      if (!viewport) return
+
+      updateScrollbar()
+      visibleRowRangeRef.current = getVisibleRowRange(viewport.scrollTop)
+      contentPoolRef.current?.onScroll(viewport.scrollTop)
+    })
   }, [updateScrollbar])
 
   useEffect(() => {
+    const viewport = viewportRef.current
+    if (viewport) {
+      visibleRowRangeRef.current = getVisibleRowRange(viewport.scrollTop)
+      contentPoolRef.current?.onScroll(viewport.scrollTop)
+    }
     updateScrollbar()
     window.addEventListener('resize', updateScrollbar)
-    return () => window.removeEventListener('resize', updateScrollbar)
+    return () => {
+      window.removeEventListener('resize', updateScrollbar)
+      if (scrollRafRef.current) {
+        cancelAnimationFrame(scrollRafRef.current)
+      }
+    }
   }, [tickets, updateScrollbar])
 
   function handleTrackClick(event) {
@@ -81,41 +134,30 @@ function Panel() {
         >
           <div className="panel-grid-spacer" style={{ height: totalH }} />
 
-          {sortedOrder.map((ticketNumber) => {
-            const ticket = ticketsById.get(ticketNumber)
-            if (!ticket) return null
-
-            return (
-              <div
-                key={ticketNumber}
-                ref={(element) => registerNodeRef(ticketNumber, element)}
-                className="panel-ticket-node"
-              >
-                <Ticket
-                  ticketNumber={ticket.ticketNumber}
-                  numbers={ticket.numbers}
-                  drawnNumbers={drawnNumbers}
-                  betPerTicket={betPerTicket}
-                />
-              </div>
-            )
-          })}
+          <VisibleTicketPool
+            ref={contentPoolRef}
+            viewportRef={viewportRef}
+            sortedOrder={sortedOrder}
+            prevSortedOrder={prevSortedOrderRef.current}
+            ticketsById={ticketsById}
+            ticketToSlot={ticketToSlot}
+            flipTicketNumbers={flipTicketNumbers}
+            drawnNumbers={drawnNumbers}
+            betPerTicket={betPerTicket}
+          />
         </div>
       </div>
 
       <div
-        className={`panel-scrollbar${scrollbar.visible ? '' : ' panel-scrollbar--idle'}`}
-        onClick={scrollbar.visible ? handleTrackClick : undefined}
+        ref={scrollbarTrackRef}
+        className={`panel-scrollbar${scrollbarVisible ? '' : ' panel-scrollbar--idle'}`}
+        onClick={scrollbarVisible ? handleTrackClick : undefined}
       >
-        {scrollbar.visible && (
-          <div
-            className="panel-scrollbar-thumb"
-            style={{
-              height: scrollbar.thumbHeight,
-              transform: `translateY(${scrollbar.thumbTop}px)`,
-            }}
-          />
-        )}
+        <div
+          ref={scrollbarThumbRef}
+          className="panel-scrollbar-thumb"
+          style={{ display: scrollbarVisible ? undefined : 'none' }}
+        />
       </div>
     </div>
   )
